@@ -12,86 +12,63 @@ function get_system_version()
 end
 
 function check_update()
-		needs_update, notice = false, false
-		remote_version = luci.sys.exec("[ -f '" ..version_file.. "' ] && echo -n `cat " ..version_file.. "`")
-		remoteformat = luci.sys.exec("date -d $(echo " ..remote_version.. " | awk -F. '{printf $3\"-\"$1\"-\"$2}') +%s")
-		fnotice = luci.sys.exec("echo -n " ..remote_version.. " | sed -n '/\\.$/p'")
-		dateyr = luci.sys.exec("echo -n " ..remote_version.. " | awk -F. '{printf $1\".\"$2}'")
+		needs_update, notice, md5 = false, false, false
+		remote_version = luci.sys.exec("curl -skfL https://op.supes.top/firmware/" ..model.. "/version.txt")
+		updatelogs = luci.sys.exec("curl -skfL https://op.supes.top/firmware/" ..model.. "/updatelogs.txt")
+		remoteformat = luci.sys.exec("date -d $(echo \"" ..remote_version.. "\" | tr '\r\n' ',' | awk -F, '{printf $1}' | awk -F. '{printf $3\"-\"$1\"-\"$2}') +%s")
+		fnotice = luci.sys.exec("echo \"" ..remote_version.. "\" | tr '\r\n' ',' | awk -F, '{printf $(NF-1)}'")
+		dateyr = luci.sys.exec("echo \"" ..remote_version.. "\" | tr '\r\n' ',' | awk -F. '{printf $1\".\"$2}'")
+		md5 = luci.sys.exec("echo \"" ..remote_version.. "\" | tr '\r\n' ',' | awk -F, '{printf $2}'")
+		remote_version = luci.sys.exec("echo \"" ..remote_version.. "\" | tr '\r\n' ',' | awk -F, '{printf $1}' | awk -F. '{printf $1\".\"$2\".\"$3}'")
 		if remoteformat > sysverformat then
 			needs_update = true
-			if currentTimeStamp > remoteformat or fnotice ~= "" then
-				notice = fnotice
+			if currentTimeStamp > remoteformat or fnotice == "1" then
+				notice = true
 			end
 		end
 end
 
 function to_check()
     if not model or model == "" then model = api.auto_get_model() end
-    
-	version_file = "/tmp/version.txt"
-	updatelogs = "/tmp/updatelogs.txt"
-	system_version = get_system_version()
-	sysverformat = luci.sys.exec("date -d $(echo " ..system_version.. " | awk -F. '{printf $3\"-\"$1\"-\"$2}') +%s")
+	sysverformat = luci.sys.exec("date -d $(echo " ..get_system_version().. " | awk -F. '{printf $3\"-\"$1\"-\"$2}') +%s")
 	currentTimeStamp = luci.sys.exec("expr $(date -d \"$(date '+%Y-%m-%d %H:%M:%S')\" +%s) - 172800")
 	if model == "x86_64" then
-		api.exec(api.curl, {api._unpack(api.curl_args), "-o", version_file, "https://op.supes.top/firmware/x86_64/version.txt"}, nil, api.command_timeout)
-		api.exec(api.curl, {api._unpack(api.curl_args), "-o", updatelogs, "https://op.supes.top/firmware/x86_64/updatelogs.txt"}, nil, api.command_timeout)
 		check_update()
 		if fs.access("/sys/firmware/efi") then
-			download_url = "https://op.supes.top/firmware/x86_64/" ..dateyr.. "-openwrt-x86-64-generic-squashfs-combined-efi.img.gz"
+			download_url = "https://op.supes.top/firmware/" ..model.. "/" ..dateyr.. "-openwrt-x86-64-generic-squashfs-combined-efi.img.gz"
 		else
-			download_url = "https://op.supes.top/firmware/x86_64/" ..dateyr.. "-openwrt-x86-64-generic-squashfs-combined.img.gz"
+			download_url = "https://op.supes.top/firmware/" ..model.. "/" ..dateyr.. "-openwrt-x86-64-generic-squashfs-combined.img.gz"
+			md5 = ""
 		end
-    elseif model:match(".*K2P.*") then
-		api.exec(api.curl, {api._unpack(api.curl_args), "-o", version_file, "https://op.supes.top/firmware/phicomm-k2p/version.txt"}, nil, api.command_timeout)
-		api.exec(api.curl, {api._unpack(api.curl_args), "-o", updatelogs, "https://op.supes.top/firmware/phicomm-k2p/updatelogs.txt"}, nil, api.command_timeout)
-		check_update()
-        download_url = "https://op.supes.top/firmware/phicomm-k2p/" ..dateyr.. "-openwrt-ramips-mt7621-phicomm_k2p-squashfs-sysupgrade.bin"
-    elseif model:match(".*AC2100.*") then
-		api.exec(api.curl, {api._unpack(api.curl_args), "-o", version_file, "https://op.supes.top/firmware/redmi-ac2100/version.txt"}, nil, api.command_timeout)
-		api.exec(api.curl, {api._unpack(api.curl_args), "-o", updatelogs, "https://op.supes.top/firmware/redmi-ac2100/updatelogs.txt"}, nil, api.command_timeout)
-		check_update()
-        download_url = "https://op.supes.top/firmware/redmi-ac2100/" ..dateyr.. "-openwrt-ramips-mt7621-redmi-ac2100-squashfs-sysupgrade.bin"
     elseif model:match(".*R2S.*") then
-		api.exec(api.curl, {api._unpack(api.curl_args), "-o", version_file, "https://op.supes.top/firmware/nanopi-r2s/version.txt"}, nil, api.command_timeout)
-		api.exec(api.curl, {api._unpack(api.curl_args), "-o", updatelogs, "https://op.supes.top/firmware/nanopi-r2s/updatelogs.txt"}, nil, api.command_timeout)
+		model = "nanopi-r2s"
 		check_update()
-        download_url = "https://op.supes.top/firmware/nanopi-r2s/" ..dateyr.. "-openwrt-rockchip-armv8-nanopi-r2s-squashfs-sysupgrade.img.gz"
-    elseif model:match(".*HC5962.*") then
-		api.exec(api.curl, {api._unpack(api.curl_args), "-o", version_file, "https://op.supes.top/firmware/hiwifi-hc5962/version.txt"}, nil, api.command_timeout)
-		api.exec(api.curl, {api._unpack(api.curl_args), "-o", updatelogs, "https://op.supes.top/firmware/hiwifi-hc5962/updatelogs.txt"}, nil, api.command_timeout)
+			download_url = "https://op.supes.top/firmware/" ..model.. "/" ..dateyr.. "-openwrt-rockchip-armv8-nanopi-r2s-squashfs-sysupgrade.img.gz"
+    elseif model:match(".*R4S.*") then
+		model = "nanopi-r4s"
 		check_update()
-        download_url = "https://op.supes.top/firmware/hiwifi-hc5962/" ..dateyr.. "-openwrt-ramips-mt7621-hiwifi_hc5962-squashfs-sysupgrade.bin"
-    elseif model:match(".*D2.*") then
-		api.exec(api.curl, {api._unpack(api.curl_args), "-o", version_file, "https://op.supes.top/firmware/newifi-d2/version.txt"}, nil, api.command_timeout)
-		api.exec(api.curl, {api._unpack(api.curl_args), "-o", updatelogs, "https://op.supes.top/firmware/newifi-d2/updatelogs.txt"}, nil, api.command_timeout)
+			download_url = "https://op.supes.top/firmware/" ..model.. "/" ..dateyr.. "-openwrt-rockchip-armv8-nanopi-r4s-squashfs-sysupgrade.img.gz"
+    elseif model:match(".*R2C.*") then
+		model = "nanopi-r2c"
 		check_update()
-        download_url = "https://op.supes.top/firmware/newifi-d2/" ..dateyr.. "-openwrt-ramips-mt7621-newifi-d2-squashfs-sysupgrade.bin"
-    elseif model:match(".*XIAOYU.*") then
-		api.exec(api.curl, {api._unpack(api.curl_args), "-o", version_file, "https://op.supes.top/firmware/XY-C5/version.txt"}, nil, api.command_timeout)
-		api.exec(api.curl, {api._unpack(api.curl_args), "-o", updatelogs, "https://op.supes.top/firmware/XY-C5/updatelogs.txt"}, nil, api.command_timeout)
+			download_url = "https://op.supes.top/firmware/" ..model.. "/" ..dateyr.. "-openwrt-rockchip-armv8-nanopi-r2c-squashfs-sysupgrade.img.gz"
+    elseif model:match(".*Pi 4 Model B.*") then
+		model = "Rpi-4B"
 		check_update()
-		if remoteformat > sysverformat and currentTimeStamp > remoteformat then needs_update = true else needs_update = false end
-        download_url = "https://op.supes.top/firmware/XY-C5/" ..dateyr.. "-openwrt-ramips-mt7621-xiaoyu_xy-c5-squashfs-sysupgrade.bin"
-    elseif model:match(".*4B.*") then
-		api.exec(api.curl, {api._unpack(api.curl_args), "-o", version_file, "https://op.supes.top/firmware/Rpi-4B/version.txt"}, nil, api.command_timeout)
-		api.exec(api.curl, {api._unpack(api.curl_args), "-o", updatelogs, "https://op.supes.top/firmware/Rpi-4B/updatelogs.txt"}, nil, api.command_timeout)
-		check_update()
-		if remoteformat > sysverformat and currentTimeStamp > remoteformat then needs_update = true else needs_update = false end
-        download_url = "https://op.supes.top/firmware/Rpi-4B/" ..dateyr.. "-openwrt-bcm27xx-bcm2711-rpi-4-squashfs-sysupgrade.img.gz"
-	else
+		download_url = "https://op.supes.top/firmware/" ..model.. "/" ..dateyr.. "-openwrt-bcm27xx-bcm2711-rpi-4-squashfs-sysupgrade.img.gz"
+    else
 		local needs_update = false
 		return {
             code = 1,
             error = i18n.translate("Can't determine MODEL, or MODEL not supported.")
 			}
-	end
+    end
 	
 
     if needs_update and not download_url then
         return {
             code = 1,
-            now_version = system_version,
+            now_version = get_system_version(),
             version = remote_version,
             error = i18n.translate(
                 "New version found, but failed to get new version download url.")
@@ -101,15 +78,16 @@ function to_check()
     return {
         code = 0,
         update = needs_update,
-		notice = notice,
-        now_version = system_version,
+        notice = notice,
+        now_version = get_system_version(),
         version = remote_version,
-	logs = luci.sys.exec("[ -f '" ..updatelogs.. "' ] && echo `cat " ..updatelogs.. "`"),
+        md5 = md5,
+        logs = updatelogs,
         url = download_url
     }
 end
 
-function to_download(url)
+function to_download(url,md5)
     if not url or url == "" then
         return {code = 1, error = i18n.translate("Download url is required.")}
     end
@@ -118,7 +96,7 @@ function to_download(url)
 
     local tmp_file = util.trim(util.exec("mktemp -u -t firmware_download.XXXXXX"))
 
-    local result = api.exec(api.curl, {api._unpack(api.curl_args), "-o", tmp_file, url}, nil, api.command_timeout) == 0
+    local result = api.exec(api.wget, {api._unpack(api.wget_args), "-O", tmp_file, url}, nil, api.command_timeout) == 0
 
     if not result then
         api.exec("/bin/rm", {"-f", tmp_file})
@@ -127,6 +105,16 @@ function to_download(url)
             error = i18n.translatef("File download failed or timed out: %s", url)
         }
     end
+
+	local md5local = sys.exec("echo -n $(md5sum " .. tmp_file .. " | awk '{print $1}')")
+
+	if md5 ~= "" and md5local ~= md5 then
+		api.exec("/bin/rm", {"-f", tmp_file})
+		return {
+            code = 1,
+            error = i18n.translatef("Md5 check failed: %s", url)
+        }
+	end
 
     return {code = 0, file = tmp_file}
 end
@@ -138,15 +126,11 @@ function to_flash(file,retain)
 if not retain or retain == "" then
 	local result = api.exec("/sbin/sysupgrade", {file}, nil, api.command_timeout) == 0
 else
-	local result = api.exec("/sbin/sysupgrade", {retain, file}, nil, api.command_timeout) == 0
+	if retain:match(".*-q .*") then
+		luci.sys.exec("echo -e /etc/backup/user_installed.opkg>/lib/upgrade/keep.d/luci-app-gpsysupgrade")
+	end
+	sys.exec("/sbin/sysupgrade " ..retain.. " " ..file.. "")
 end
-
-    if not result or not fs.access(file) then
-        return {
-            code = 1,
-            error = i18n.translatef("System upgrade failed")
-        }
-    end
 
     return {code = 0}
 end

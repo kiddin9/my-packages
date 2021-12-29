@@ -97,7 +97,11 @@ local system_version = require "luci.model.cbi.gpsysupgrade.sysupgrade".get_syst
 					if(ckeckDetailElm) {
 						var urlNode = '';
 						if(json.version) {
-							urlNode = '<em style="color:red;">最新版本号：' + json.version + '</em>';
+							if(json.notice) {
+								urlNode = '<em style="color:red;">最新版本号：' + json.version + ' &nbsp;正式版</em>';
+							} else {
+								urlNode = '<em style="color:red;">最新版本号：' + json.version + ' &nbsp;尝鲜版</em>';
+							}
 						}
 						if(json.logs) {
 							logs = '<div class="alert alert-message">' + json.logs + '</div>';
@@ -126,7 +130,8 @@ local system_version = require "luci.model.cbi.gpsysupgrade.sysupgrade".get_syst
 		// Download file
 		XHR.get(sysUpgradeUrl, {
 			token: tokenStr,
-			url: sysUpgradeInfo ? sysUpgradeInfo.url : ''
+			url: sysUpgradeInfo ? sysUpgradeInfo.url : '',
+			md5: sysUpgradeInfo ? sysUpgradeInfo.md5 : ''
 		}, function(x,json) {
 			if(json.code) {
 				removePageNotice_sysup();
@@ -136,26 +141,25 @@ local system_version = require "luci.model.cbi.gpsysupgrade.sysupgrade".get_syst
 						message.style.display = '';
 							label.innerHTML = '<%:Upgrade successful, Waiting for device...%>';
 							
-			var opts = "";
+			var opts = "-u";
 		if (!kconfig.checked){
 			opts = "-n";
 			}
 
 		if (kopkg.checked){
-			opts = "-k";
+			opts = "-q -u";
 			}
 		if (!kconfig.checked && kopkg.checked){
-			opts = "-n -k";
+			opts = "-n -q";
 			}
-				removePageNotice_sysup();
-				check();
+			removePageNotice_sysup();
+			setTimeout(check, 8000);
 						XHR.get(sysUpgradeUrl, {
 							token: tokenStr,
 							task: 'flash',
 							file: json.file,
 							retain: opts
 						}, function(x,json) {
-							
 						},300)
 			}
 		},300)
@@ -173,7 +177,25 @@ local system_version = require "luci.model.cbi.gpsysupgrade.sysupgrade".get_syst
 			<span>【 <%=system_version%> 】</span>
 		&nbsp;&nbsp;&nbsp;<span id="_sysup-check_btn-detail"></span>
 		</div>
-	<div id="updatelogs"></div>
+<style>
+#updatelogs .alert-message p{
+	text-align:left;
+	}
+#updatelogs .alert-message a{
+    color: orangered;
+text-decoration: underline;
+}
+.red{
+    color: orangered;
+}
+#updatelogs h4{
+padding-bottom:0;
+	}
+#updatelogs h4.title{
+font-size:130%
+	}
+</style>
+	<pre id="updatelogs" style="font-family:Microsoft Yahei;line-height:1.5rem;white-space:pre-line;"></div>
 <div id="retain" style="display:none;margin:0.5rem;">
 	<p style="margin-top:0.4rem;"><button class="btn"><input type="checkbox" checked id="kconfig"> <%:Keep settings and retain the current configuration%></button></p>
 <p style="margin-top:0.5rem;"><button class="btn"><input type="checkbox" checked id="kopkg"> <%:Retain the current packages%></button></p>
@@ -198,7 +220,7 @@ local system_version = require "luci.model.cbi.gpsysupgrade.sysupgrade".get_syst
 	}
 
 	function check() {
-		window.setTimeout(ping, 5000);
+		window.setTimeout(ping, 3000);
 	}
 
 	function ping() {
