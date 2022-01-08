@@ -123,5 +123,6 @@ killall -9 $(ps -w | grep /etc/init.d/packages | grep -v grep | awk '{print$1}')
 
 restart() {
 stop
+rm -f /etc/inited
 start
 }
