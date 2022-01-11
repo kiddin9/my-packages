@@ -69,7 +69,7 @@ mkdir -p $BKOPKG
 if [ ! -f /etc/inited ]; then
 	[ "$(uci -q get dhcp.@dnsmasq[0].noresolv)" == 1 ] && {
 		uci -q del dhcp.@dnsmasq[0].noresolv
-		uci del dhcp.@dnsmasq[0].server
+		uci -q del dhcp.@dnsmasq[0].server
 		uci commit dhcp
 		/etc/init.d/dnsmasq reload
 	}
