@@ -1,5 +1,5 @@
 . /etc/profile.d/opkg.sh
-OPKG_CONF="auto"
+OPKG_CONF="$(uci -q get opkg.defaults.restore)"
 OPKG_PI="$(opkg export pi)"
 if [ ! -e /etc/opkg-restore-"${OPKG_CONF}" ] \
 && lock -n /var/lock/opkg-restore && [ -s "${OPKG_PI}" ]; then
@@ -26,7 +26,7 @@ done
 c1=0
 logs="opkg_install_cmd"
 while echo $logs | grep "opkg_install_cmd"; do
-logs="$(opkg restore)"
+logs="$(opkg restore $OPKG_CONF)"
 echo "${logs}" | logger -t opkg
 [ $c1 -eq 5 ] && {
 	lock -u /var/lock/opkg-restore
