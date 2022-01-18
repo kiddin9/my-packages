@@ -130,7 +130,7 @@ else
 	if retain:match(".*-q .*") then
 		sys.call(". /etc/profile.d/opkg.sh;opkg save;")
 	end
-	sys.call("sleep 1; /sbin/sysupgrade " ..retain.. " " ..file.. "")
+	sys.call("/sbin/sysupgrade " ..retain.. " " ..file.. "")
 end
 
     return {code = 0}
