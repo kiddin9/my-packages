@@ -1,6 +1,6 @@
 . /etc/profile.d/opkg.sh
 OPKG_PI="$(opkg export pi)"
-if [ ! -e /etc/opkg-restore-"${OPKG_CONF}" ] \
+if [ ! -e /etc/opkg-restore-auto ] \
 && lock -n /var/lock/opkg-restore && [ -s "${OPKG_PI}" ]; then
 c=0
 while ! curl https://op.supes.top >/dev/null || ! opkg update >/dev/null; do
@@ -33,7 +33,7 @@ echo "${logs}" | logger -t opkg
 	} || let c1++
 sleep 2
 done
-touch /etc/opkg-restore-"${OPKG_CONF}"
+touch /etc/opkg-restore-auto
 
 fi
 lock -u /var/lock/opkg-restore
