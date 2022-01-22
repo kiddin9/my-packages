@@ -3,7 +3,7 @@
 include $(TOPDIR)/rules.mk
 
 LUCI_TITLE:=LuCI for sysupgrade
-LUCI_DEPENDS:=+luci-base +luci-lib-ipkg
+LUCI_DEPENDS:=+luci-base
 PKG_MAINTAINER:=Kiddin'
 
 include $(TOPDIR)/feeds/luci/luci.mk
