@@ -35,9 +35,6 @@ endef
 
 define Package/$(PKG_NAME)/install
 	$(CP) ./files/* $(1)/
-	if [ -d $(GENERIC_PLATFORM_DIR)/base-files/. ]; then \
-		$(CP) $(GENERIC_PLATFORM_DIR)/base-files/* $(1)/; \
-	fi
 	if [ -d $(PLATFORM_DIR)/base-files/. ]; then \
 		$(CP) $(PLATFORM_DIR)/base-files/* $(1)/; \
 	fi
