@@ -35,6 +35,17 @@ endef
 
 define Package/$(PKG_NAME)/install
 	$(CP) ./files/* $(1)/
+	if [ -d $(GENERIC_PLATFORM_DIR)/base-files/. ]; then \
+		$(CP) $(GENERIC_PLATFORM_DIR)/base-files/* $(1)/; \
+	fi
+	if [ -d $(PLATFORM_DIR)/base-files/. ]; then \
+		$(CP) $(PLATFORM_DIR)/base-files/* $(1)/; \
+	fi
+	$(if $(filter-out $(PLATFORM_DIR),$(PLATFORM_SUBDIR)), \
+		if [ -d $(PLATFORM_SUBDIR)/base-files/. ]; then \
+			$(CP) $(PLATFORM_SUBDIR)/base-files/* $(1)/; \
+		fi; \
+	)
 	$(INSTALL_DIR) $(1)/usr/lib/lua/luci/i18n
 	po2lmo ./po/zh_Hans/default.po $(1)/usr/lib/lua/luci/i18n/default.zh-cn.lmo
 
