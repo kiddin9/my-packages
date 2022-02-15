@@ -6,6 +6,7 @@
 #
 
 include $(TOPDIR)/rules.mk
+include $(INCLUDE_DIR)/kernel.mk
 
 PKG_NAME:=my-default-settings
 PKG_VERSION:=1
@@ -35,6 +36,7 @@ endef
 
 define Package/$(PKG_NAME)/install
 	$(CP) ./files/* $(1)/
+	echo $(BOARD)$(TARGETID)
 	if [ -d ./target/$(BOARD)/files/. ]; then \
 		$(CP) ./target/$(BOARD)/files/* $(1)/; \
 	fi
