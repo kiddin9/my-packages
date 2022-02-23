@@ -8,12 +8,6 @@ grep -q "host/luci" /etc/config/nginx || {
 	uci commit nginx
 	service nginx reload
 }
-(
-sleep 1
-grep -q "ifname 'br-lan'" /etc/config/network || {
-sed -i "s/\(option device '\(.*\)'\)/\1\n\toption ifname '\2'/" /etc/config/network
-}
-) &
 
 ([ -x /bin/bash ] && ! grep -q "^root.*bash" /etc/passwd) && sed -i "s/^\(root.*\/\)ash/\1bash/g" /etc/passwd
 
@@ -228,6 +222,13 @@ echo vm.swappiness=0 >>$SYSCTL_LOCAL
 
 cp -pR /www/cgi-bin/* /www/
 rm -rf /tmp/luci-*
+
+(
+sleep 1
+grep -q "ifname 'br-lan'" /etc/config/network || {
+sed -i "s/\(option device '\(.*\)'\)/\1\n\toption ifname '\2'/" /etc/config/network
+}
+) &
 
 uci -q set base_config.@status[0].version=$version
 uci commit base_config
