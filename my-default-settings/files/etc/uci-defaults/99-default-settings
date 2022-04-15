@@ -72,7 +72,7 @@ test $version -lt 1 && {
 	local radio=$1
 	uci -q get wireless.${radio} >/dev/null 2>&1 && {
 			uci -q del wireless.${radio}.disabled
-			uci -q set wireless.${radio}.country='CN'
+			uci -q set wireless.${radio}.country='AU'
 			uci -q set wireless.${radio}.channel='auto'
 		
 		if [ "$(uci -q get wireless.${radio}.hwmode)" = "11a" ]; then
