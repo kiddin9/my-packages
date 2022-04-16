@@ -99,8 +99,6 @@ test $version -lt 1 && {
 			wifi_setup_radio ${radio}
 		done
 		uci commit wireless
-		wifi reload
-		wifi up
 	}
 
 	uci -q set upnpd.config.enabled='1'
