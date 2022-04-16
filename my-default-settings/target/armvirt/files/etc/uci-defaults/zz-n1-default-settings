@@ -1,3 +1,5 @@
+#!/bin/sh
+
 version=`uci -q get base_config.@status[0].version`
 
 test $version -lt 3 && {
