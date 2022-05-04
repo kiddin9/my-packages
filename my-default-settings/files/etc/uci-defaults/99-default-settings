@@ -81,6 +81,8 @@ test $version -lt 1 && {
 	wifi_setup_radio(){
 	local radio=$1
 	htmode="$(uci get wireless.${radio}.htmode)"
+	local widx=0
+	while uci rename wireless.@wifi-iface[$widx]=default_radio$widx >/dev/null 2>&1; do widx=$((widx+1)); done
 	uci -q get wireless.${radio} >/dev/null 2>&1 && {
 			uci -q del wireless.${radio}.disabled
 			uci -q set wireless.${radio}.country='AU'
