@@ -81,6 +81,11 @@ test $version -lt 1 && {
 	wifi_setup_radio(){
 	local radio=$1
 	htmode="$(uci get wireless.${radio}.htmode)"
+	if test -z "${htmode##HE*}"; then
+		htmode=HE
+	else
+		htmode=
+	fi
 	uci -q get wireless.${radio} >/dev/null 2>&1 && {
 			uci -q del wireless.${radio}.disabled
 			uci -q set wireless.${radio}.country='AU'
