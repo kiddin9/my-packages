@@ -92,10 +92,10 @@ test $version -lt 1 && {
 			uci -q set wireless.${radio}.channel='auto'
 		
 		if [ "$(uci -q get wireless.${radio}.band)" = "5g" ]; then
-			uci -q set wireless.default_${radio}.ssid="${SSID}_5G"
+			uci -q set wireless.${radio#*o}.ssid="${SSID}_5G"
 		else
 			uci -q set wireless.${radio}.htmode="${htmode:-HT}40"
-			uci -q set wireless.default_${radio}.ssid="${SSID}_2.4G"
+			uci -q set wireless.${radio#*o}.ssid="${SSID}_2.4G"
 		fi
 			uci -q set wireless.wifinet${radio#*o}.ieee80211r='1'
 			if [ "${SSID_PASSWD}" ]; then
