@@ -3,8 +3,7 @@
 ETHTOOL=/usr/sbin/ethtool
 
 case "$(board_name)" in
-friendlyarm,nanopi-r2s | \
-friendlyelec,nanopi-r2c)
+friendlyelec,nanopi-r2s)
 	[ "$(uci get network.$INTERFACE.device)" = "eth1" ] && \
 	[ "$ACTION" = "ifup" ] && \
 	$ETHTOOL -K eth1 rx off tx off
