@@ -2,11 +2,11 @@
 
 ETHTOOL=/usr/sbin/ethtool
 
-ethtool -i eth0 | grep r8152 && \
+$ETHTOOL -i eth0 | grep r8152 && \
 [ "$ACTION" = "ifup" ] && \
 $ETHTOOL -K eth0 rx off tx off
 
-ethtool -i eth1 | grep r8152 && \
+$ETHTOOL -i eth1 | grep r8152 && \
 [ "$ACTION" = "ifup" ] && \
 $ETHTOOL -K eth1 rx off tx off
 
