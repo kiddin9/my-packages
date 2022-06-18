@@ -61,8 +61,6 @@ define Package/autocore/install/Default
 	$(INSTALL_DATA) ./files/common/29_eth.js $(1)/www/luci-static/resources/view/status/include/
 	$(INSTALL_DIR) $(1)/usr/lib/lua/luci/view/admin_status/index
 	$(INSTALL_DATA) ./files/common/disc_status.htm $(1)/usr/lib/lua/luci/view/admin_status/index/
-	$(INSTALL_DIR) $(1)/usr/share/rpcd/acl.d
-	$(CP) ./files/generic/luci-mod-status-autocore.json $(1)/usr/share/rpcd/acl.d/
 endef
 
 define Package/my-autocore-arm/install
