@@ -12,6 +12,7 @@ PKG_VERSION:=1
 PKG_RELEASE:=7
 
 include $(INCLUDE_DIR)/package.mk
+include $(INCLUDE_DIR)/target.mk
 
 define Package/my-autocore-arm
   SECTION:=libs
@@ -60,12 +61,14 @@ define Package/autocore/install/Default
 	$(INSTALL_DATA) ./files/common/29_eth.js $(1)/www/luci-static/resources/view/status/include/
 	$(INSTALL_DIR) $(1)/usr/lib/lua/luci/view/admin_status/index
 	$(INSTALL_DATA) ./files/common/disc_status.htm $(1)/usr/lib/lua/luci/view/admin_status/index/
+	$(INSTALL_DIR) $(1)/usr/share/rpcd/acl.d
+	$(CP) ./files/generic/luci-mod-status-autocore.json $(1)/usr/share/rpcd/acl.d/
 endef
 
 define Package/my-autocore-arm/install
 	$(call Package/autocore/install/Default,$(1))
 
-ifneq (, $(findstring $(BOARD), ipq40xx ipq806x ipq807x))
+ifneq ($(filter ipq% %mt7622, $(TARGETID)),)
 	$(INSTALL_BIN) ./files/arm/tempinfo $(1)/sbin/
 endif
 endef
