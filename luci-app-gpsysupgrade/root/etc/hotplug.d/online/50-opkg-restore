@@ -15,7 +15,7 @@ echo "Network error." | logger -t opkg
 		}
 	/etc/init.d/dnsmasq reload
 }
-[ $c -eq 200 ] && {
+[ $c -eq 300 ] && {
 	lock -u /var/lock/opkg-restore
 	exit 0
 } || let c++
