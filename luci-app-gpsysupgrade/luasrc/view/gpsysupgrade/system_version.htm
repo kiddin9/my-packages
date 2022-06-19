@@ -98,9 +98,9 @@ local system_version = require "luci.model.cbi.gpsysupgrade.sysupgrade".get_syst
 						var urlNode = '';
 						if(json.version) {
 							if(json.notice) {
-								urlNode = '<em style="color:red;">鏈€鏂扮増鏈彿锛�' + json.version + ' &nbsp;姝ｅ紡鐗�</em>';
+								urlNode = '<em style="color:red;">最新版本号：' + json.version + ' &nbsp;正式版</em>';
 							} else {
-								urlNode = '<em style="color:red;">鏈€鏂扮増鏈彿锛�' + json.version + ' &nbsp;灏濋矞鐗�</em>';
+								urlNode = '<em style="color:red;">最新版本号：' + json.version + ' &nbsp;尝鲜版</em>';
 							}
 						}
 						if(json.logs) {
@@ -174,7 +174,7 @@ local system_version = require "luci.model.cbi.gpsysupgrade.sysupgrade".get_syst
 	</label>
 	
 		<div class="cbi-value-description">
-			<span>銆� <%=system_version%> 銆�</span>
+			<span>【 <%=system_version%> 】</span>
 		&nbsp;&nbsp;&nbsp;<span id="_sysup-check_btn-detail"></span>
 		</div>
 <style>
@@ -200,7 +200,7 @@ local boardinfo = luci.util.ubus("system", "board") or { }
 overlay = boardinfo.release.distribution
 %>
 <%- if overlay ~="OpenWrt" and overlay ~= "1004" then -%>
-	<b style="color:orangered">娉ㄦ剰: 淇敼杩囨牴鐩綍澶у皬鐨勫畾鍒跺浐浠惰浣跨敤<a target="_blank" href="https://supes.top"> 缃戠珯 </a>鎴栧畨瑁卨uci-app-attendsysupgrade閲嶆柊鐢熸垚瀹氬埗鍥轰欢, 鐩存帴鐢ㄦ鍦ㄧ嚎鏇存柊浼氶噸缃垎鍖�,涓㈠け閰嶇疆.</b>
+	<b style="color:orangered">注意: 修改过根目录大小的定制固件请使用<a target="_blank" href="https://supes.top"> 网站 </a>或安装luci-app-attendsysupgrade重新生成定制固件, 直接用此在线更新会重置分区,丢失配置.</b>
 <%- end -%>
 
 	<pre id="updatelogs" style="font-family:Microsoft Yahei;line-height:1.5rem;white-space:pre-line;"></div>
