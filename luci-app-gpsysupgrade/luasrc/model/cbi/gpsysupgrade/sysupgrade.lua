@@ -146,6 +146,10 @@ function to_check()
 		model = "ramips_mt7621/phicomm-k2p"
 		check_update()
 		download_url = "https://op.supes.top/firmware/" ..model.. "/" ..remote_version.. "-openwrt-ramips-mt7621-phicomm_k2p-squashfs-sysupgrade.bin"
+    elseif model:match(".*PHICOMM K3.*") then
+		model = "bcm53xx/phicomm-k3"
+		check_update()
+		download_url = "https://op.supes.top/firmware/" ..model.. "/" ..remote_version.. "-openwrt-bcm53xx-generic-phicomm_k3-squashfs.trx"
     else
 		local needs_update = false
 		return {
