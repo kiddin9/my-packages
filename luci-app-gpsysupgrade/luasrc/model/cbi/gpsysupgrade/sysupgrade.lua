@@ -27,7 +27,7 @@ function check_update()
 end
 
 function to_check()
-    if not board_name or board_name == "" then board_name = api.auto_get_model() end
+    if not board_name or board_name == "" then board_name = api.auto_get_board_name() end
 	sysverformat = luci.sys.exec("date -d $(echo " ..get_system_version().. " | awk -F. '{printf $3\"-\"$1\"-\"$2}') +%s")
 	currentTimeStamp = luci.sys.exec("expr $(date -d \"$(date '+%Y-%m-%d %H:%M:%S')\" +%s) - 172800")
 	if board_name == "x86_64" then
