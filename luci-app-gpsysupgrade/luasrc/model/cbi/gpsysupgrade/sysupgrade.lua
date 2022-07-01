@@ -255,9 +255,9 @@ function to_check()
 		check_update()
 		download_url = "https://op.supes.top/firmware/" ..model.. "/" ..remote_version.. "-openwrt-ramips-mt76x8-netgear_r6120-squashfs-sysupgrade.bin"
     elseif board_name:match(".*miwifi-nano") then
-		model = "ramips_mt76x8/"
+		model = "ramips_mt76x8/xiaomi_miwifi-nano"
 		check_update()
-		download_url = "https://op.supes.top/firmware/" ..model.. "/" ..remote_version.. "-openwrt-ramips-mt76x8-xiaomi_miwifi-squashfs-sysupgrade.bin"
+		download_url = "https://op.supes.top/firmware/" ..model.. "/" ..remote_version.. "-openwrt-ramips-mt76x8-xiaomi_miwifi-nano-squashfs-sysupgrade.bin"
     elseif board_name:match(".*r619ac-64m") then
 		model = "ipq40xx_generic/p2w_r619ac-64m"
 		check_update()
