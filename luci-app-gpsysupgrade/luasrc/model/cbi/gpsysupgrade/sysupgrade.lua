@@ -27,10 +27,10 @@ function check_update()
 end
 
 function to_check()
-    if not model or model == "" then model = api.auto_get_model() end
+    if not board_name or board_name == "" then board_name = api.auto_get_model() end
 	sysverformat = luci.sys.exec("date -d $(echo " ..get_system_version().. " | awk -F. '{printf $3\"-\"$1\"-\"$2}') +%s")
 	currentTimeStamp = luci.sys.exec("expr $(date -d \"$(date '+%Y-%m-%d %H:%M:%S')\" +%s) - 172800")
-	if model == "x86_64" then
+	if board_name == "x86_64" then
 		check_update()
 		if fs.access("/sys/firmware/efi") then
 			download_url = "https://op.supes.top/firmware/" ..model.. "/" ..remote_version.. "-openwrt-x86-64-generic-squashfs-combined-efi.img.gz"
@@ -38,115 +38,115 @@ function to_check()
 			download_url = "https://op.supes.top/firmware/" ..model.. "/" ..remote_version.. "-openwrt-x86-64-generic-squashfs-combined.img.gz"
 			md5 = ""
 		end
-    elseif model:match(".*R2S.*") then
+    elseif board_name:match(".*nanopi-r2s") then
 		model = "rockchip_armv8/friendlyarm_nanopi-r2s"
 		check_update()
 		download_url = "https://op.supes.top/firmware/" ..model.. "/" ..remote_version.. "-openwrt-rockchip-armv8-friendlyarm_nanopi-r2s-squashfs-sysupgrade.img.gz"
-    elseif model:match(".*R4S.*") then
+    elseif board_name:match(".*nanopi-r4s") then
 		model = "rockchip_armv8/friendlyarm_nanopi-r4s"
 		check_update()
 		download_url = "https://op.supes.top/firmware/" ..model.. "/" ..remote_version.. "-openwrt-rockchip-armv8-friendlyarm_nanopi-r4s-squashfs-sysupgrade.img.gz"
-    elseif model:match(".*R5S.*") then
+    elseif board_name:match(".*nanopi-r5s") then
 		model = "rockchip_armv8/friendlyarm_nanopi-r5s"
 		check_update()
 		download_url = "https://op.supes.top/firmware/" ..model.. "/" ..remote_version.. "-openwrt-rockchip-armv8-friendlyarm_nanopi-r5s_sd.img.gz"
-    elseif model:match(".*R2C.*") then
+    elseif board_name:match(".*nanopi-r2c") then
 		model = "rockchip_armv8/friendlyarm_nanopi-r2c"
 		check_update()
 		download_url = "https://op.supes.top/firmware/" ..model.. "/" ..remote_version.. "-openwrt-rockchip-armv8-friendlyarm_nanopi-r2c-squashfs-sysupgrade.img.gz"
-    elseif model:match(".*DoorNet2.*") then
+    elseif board_name:match(".*doornet2") then
 		model = "rockchip_armv8/embedfire_doornet2"
 		check_update()
 		download_url = "https://op.supes.top/firmware/" ..model.. "/" ..remote_version.. "-openwrt-rockchip-armv8-embedfire_doornet2-squashfs-sysupgrade.img.gz"
-    elseif model:match(".*DoorNet1.*") then
+    elseif board_name:match(".*doornet1") then
 		model = "rockchip_armv8/embedfire_doornet1"
 		check_update()
 		download_url = "https://op.supes.top/firmware/" ..model.. "/" ..remote_version.. "-openwrt-rockchip-armv8-embedfire_doornet1-squashfs-sysupgrade.img.gz"
-    elseif model:match(".*R1 Plus LTS.*") then
+    elseif board_name:match(".*r1-plus-lts") then
 		model = "rockchip_armv8/xunlong_orangepi-r1-plus-lts"
 		check_update()
 		download_url = "https://op.supes.top/firmware/" ..model.. "/" ..remote_version.. "-openwrt-rockchip-armv8-xunlong_orangepi-r1-plus-lts-squashfs-sysupgrade.img.gz"
-    elseif model:match(".*R1 Plus.*") then
+    elseif board_name:match(".*r1-plus") then
 		model = "rockchip_armv8/xunlong_orangepi-r1-plus"
 		check_update()
 		download_url = "https://op.supes.top/firmware/" ..model.. "/" ..remote_version.. "-openwrt-rockchip-armv8-xunlong_orangepi-r1-plus-squashfs-sysupgrade.img.gz"
-    elseif model:match(".*NEO3.*") then
+    elseif board_name:match(".*_nanopi-neo3.*") then
 		model = "rockchip_armv8/friendlyarm_nanopi-neo3"
 		check_update()
 		download_url = "https://op.supes.top/firmware/" ..model.. "/" ..remote_version.. "-openwrt-rockchip-armv8-nanopi-neo3-squashfs-sysupgrade.img.gz"
-    elseif model:match(".*Pi 4 Model B.*") then
+    elseif board_name:match(".*rpi-4") then
 		model = "bcm27xx_bcm2711/rpi-4"
 		check_update()
 		download_url = "https://op.supes.top/firmware/" ..model.. "/" ..remote_version.. "-openwrt-bcm27xx-bcm2711-rpi-4-squashfs-sysupgrade.img.gz"
-    elseif model:match(".*Pi 3 Model B.*") then
+    elseif board_name:match(".*rpi-3") then
 		model = "bcm27xx_bcm2710/rpi-3"
 		check_update()
 		download_url = "https://op.supes.top/firmware/" ..model.. "/" ..remote_version.. "-openwrt-bcm27xx-bcm2710-rpi-3-squashfs-sysupgrade.img.gz"
-    elseif model:match(".*Pi 2 Model B.*") then
+    elseif board_name:match(".*rpi-2") then
 		model = "bcm27xx_bcm2709/rpi-2"
 		check_update()
 		download_url = "https://op.supes.top/firmware/" ..model.. "/" ..remote_version.. "-openwrt-bcm27xx-bcm2709-rpi-2-squashfs-sysupgrade.img.gz"
-    elseif model:match(".*AX6S.*") then
+    elseif board_name:match(".*redmi-router_ax6s") then
 		model = "mediatek_mt7622/xiaomi_redmi-router_ax6s"
 		check_update()
 		download_url = "https://op.supes.top/firmware/" ..model.. "/" ..remote_version.. "-openwrt-mediatek-mt7622-xiaomi_redmi-router-ax6s-squashfs-sysupgrade.bin"
-    elseif model:match(".*AX6.*") then
+    elseif board_name:match(".*redmi_ax6") then
 		model = "ipq807x_generic/redmi_ax6"
 		check_update()
 		download_url = "https://op.supes.top/firmware/" ..model.. "/" ..remote_version.. "-openwrt-ipq807x-generic-redmi_ax6-squashfs-nand-sysupgrade.bin"
-    elseif model:match(".*AX9000.*") then
+    elseif board_name:match(".*xiaomi_ax9000") then
 		model = "ipq807x_generic/xiaomi_ax9000"
 		check_update()
 		download_url = "https://op.supes.top/firmware/" ..model.. "/" ..remote_version.. "-openwrt-ipq807x-generic-xiaomi_ax9000-squashfs-nand-sysupgrade.bin"
-    elseif model:match(".*AX3600.*") then
+    elseif board_name:match(".*xiaomi_ax3600") then
 		model = "ipq807x_generic/xiaomi_ax3600"
 		check_update()
 		download_url = "https://op.supes.top/firmware/" ..model.. "/" ..remote_version.. "-openwrt-ipq807x-generic-xiaomi_ax3600-squashfs-nand-sysupgrade.bin"
-    elseif model:match(".*XY-C5.*") then
+    elseif board_name:match(".*xy-c5") then
 		model = "ramips_mt7621/xiaoyu_xy-c5"
 		check_update()
 		download_url = "https://op.supes.top/firmware/" ..model.. "/" ..remote_version.. "-openwrt-ramips-mt7621-xiaoyu_xy-c5-squashfs-sysupgrade.bin"
-    elseif model:match(".*D2") then
+    elseif board_name:match(".*newifi-d2") then
 		model = "ramips_mt7621/d-team_newifi-d2"
 		check_update()
 		download_url = "https://op.supes.top/firmware/" ..model.. "/" ..remote_version.. "-openwrt-ramips-mt7621-d-team_newifi-d2-squashfs-sysupgrade.bin"
-    elseif model:match(".*CR660.*") then
+    elseif board_name:match(".*mi-router-cr660x") then
 		model = "ramips_mt7621/xiaomi_mi-router-cr660x"
 		check_update()
 		download_url = "https://op.supes.top/firmware/" ..model.. "/" ..remote_version.. "-openwrt-ramips-mt7621-xiaomi_mi-router-cr660x-squashfs-sysupgrade.bin"
-    elseif model:match("Mi Router 3 Pro") then
+    elseif board_name:match(".*mi-router-3-pro") then
 		model = "ramips_mt7621/xiaomi_mi-router-3-pro"
 		check_update()
 		download_url = "https://op.supes.top/firmware/" ..model.. "/" ..remote_version.. "-openwrt-ramips-mt7621-xiaomi_mi-router-3-pro-squashfs-sysupgrade.bin"
-    elseif model:match("Mi Router 4") then
+    elseif board_name:match(".*mi-router-4") then
 		model = "ramips_mt7621/xiaomi_mi-router-4"
 		check_update()
 		download_url = "https://op.supes.top/firmware/" ..model.. "/" ..remote_version.. "-openwrt-ramips-mt7621-xiaomi_mi-router-4-squashfs-sysupgrade.bin"
-    elseif model:match("Mi Router 3G") then
+    elseif board_name:match(".*mi-router-3g") then
 		model = "ramips_mt7621/xiaomi_mi-router-3g"
 		check_update()
 		download_url = "https://op.supes.top/firmware/" ..model.. "/" ..remote_version.. "-openwrt-ramips-mt7621-xiaomi_mi-router-3g-squashfs-sysupgrade.bin"
-    elseif model:match(".*Redmi Router AC2100.*") then
+    elseif board_name:match(".*redmi-router-ac2100") then
 		model = "ramips_mt7621/xiaomi_redmi-router-ac2100"
 		check_update()
 		download_url = "https://op.supes.top/firmware/" ..model.. "/" ..remote_version.. "-openwrt-ramips-mt7621-xiaomi_redmi-router-ac2100-squashfs-sysupgrade.bin"
-    elseif model:match(".*Mi Router AC2100.*") then
+    elseif board_name:match(".*mi-router-ac2100") then
 		model = "ramips_mt7621/xiaomi_mi-router-ac2100"
 		check_update()
 		download_url = "https://op.supes.top/firmware/" ..model.. "/" ..remote_version.. "-openwrt-ramips-mt7621-xiaomi_mi-router-ac2100-squashfs-sysupgrade.bin"
-    elseif model:match(".*RT-AC42U.*") then
+    elseif board_name:match(".*rt-acrh17") then
 		model = "ipq40xx_generic/asus_rt-acrh17"
 		check_update()
 		download_url = "https://op.supes.top/firmware/" ..model.. "/" ..remote_version.. "-openwrt-asus_rt-ac42u-squashfs-sysupgrade.bin"
-    elseif model:match(".*RT-AC58U.*") then
+    elseif board_name:match(".*rt-ac58u") then
 		model = "ipq40xx_generic/asus_rt-ac58u"
 		check_update()
 		download_url = "https://op.supes.top/firmware/" ..model.. "/" ..remote_version.. "-openwrt-asus_rt-ac58u-squashfs-sysupgrade.bin"
-    elseif model:match(".*K2P.*") then
+    elseif board_name:match(".*phicomm_k2p") then
 		model = "ramips_mt7621/phicomm_k2p"
 		check_update()
 		download_url = "https://op.supes.top/firmware/" ..model.. "/" ..remote_version.. "-openwrt-ramips-mt7621-phicomm_k2p-squashfs-sysupgrade.bin"
-    elseif model:match(".*PHICOMM K3.*") then
+    elseif board_name:match(".*phicomm_k3") then
 		model = "bcm53xx/phicomm_k3"
 		check_update()
 		download_url = "https://op.supes.top/firmware/" ..model.. "/" ..remote_version.. "-openwrt-bcm53xx-generic-phicomm_k3-squashfs.trx"
