@@ -103,7 +103,7 @@ function to_check()
 		model = "ipq807x_generic/xiaomi_ax3600"
 		check_update()
 		download_url = "https://op.supes.top/firmware/" ..model.. "/" ..remote_version.. "-openwrt-ipq807x-generic-xiaomi_ax3600-squashfs-nand-sysupgrade.bin"
-    elseif board_name:match("xy-c5") then
+    elseif board_name:match("xy%-c5") then
 		model = "ramips_mt7621/xiaoyu_xy-c5"
 		check_update()
 		download_url = "https://op.supes.top/firmware/" ..model.. "/" ..remote_version.. "-openwrt-ramips-mt7621-xiaoyu_xy-c5-squashfs-sysupgrade.bin"
@@ -211,7 +211,7 @@ function to_check()
 		model = "ramramips_mt7621ips/oraybox_x3a"
 		check_update()
 		download_url = "https://op.supes.top/firmware/" ..model.. "/" ..remote_version.. "-openwrt-ramips-mt7621-oraybox_x3a-squashfs-sysupgrade.bin"
-    elseif board_name:match("wndr3700%-v5$") then
+    elseif board_name:match("wndr3700%-v5") then
 		model = "ramips_mt7621/netgear_wndr3700-v5"
 		check_update()
 		download_url = "https://op.supes.top/firmware/" ..model.. "/" ..remote_version.. "-openwrt-ramips-mt7621-netgear_wndr3700-v5-squashfs-sysupgrade.bin"
