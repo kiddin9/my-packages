@@ -46,14 +46,14 @@ if test $version -lt 1; then
 	uci -q set dropbear.@dropbear[0].Interface='lan'
 	uci commit dropbear
 	
-	uci -q get system.@system[0] >/dev/null 2>&1 && {
+	if uci -q get system.@system[0] >/dev/null; then
 		uci -q set system.@system[0].zonename='Asia/Shanghai'
 		uci -q set system.@system[0].timezone='CST-8'
 		uci -q del system.ntp.server
 		uci -q add_list system.ntp.server='ntp.aliyun.com'
 		uci -q add_list system.ntp.server='0.openwrt.pool.ntp.org'
 		uci commit system
-	}
+	fi
 
 	uci -q set uhttpd.main.rfc1918_filter=0
 	uci -q set uhttpd.main.redirect_https=0
