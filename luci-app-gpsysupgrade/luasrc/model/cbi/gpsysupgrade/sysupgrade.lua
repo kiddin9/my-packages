@@ -88,7 +88,7 @@ function to_check()
 		check_update()
 		download_url = "https://op.supes.top/firmware/" ..model.. "/" ..remote_version.. "-openwrt-bcm27xx-bcm2709-rpi-2-squashfs-sysupgrade.img.gz"
     elseif board_name:match("redmi%-router-ax6s") then
-		model = "mediatek_mt7622/xiaomi_redmi-router_ax6s"
+		model = "mediatek_mt7622/xiaomi_redmi-router-ax6s"
 		check_update()
 		download_url = "https://op.supes.top/firmware/" ..model.. "/" ..remote_version.. "-openwrt-mediatek-mt7622-xiaomi_redmi-router-ax6s-squashfs-sysupgrade.bin"
     elseif board_name:match("redmi,ax6") then
