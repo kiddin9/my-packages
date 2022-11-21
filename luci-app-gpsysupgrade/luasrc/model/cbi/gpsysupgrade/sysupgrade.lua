@@ -384,6 +384,10 @@ function to_check()
 		model = "mvebu_cortexa9/linksys_wrt1200ac"
 		check_update()
 		download_url = "https://op.supes.top/firmware/" ..model.. "/" ..remote_version.. "-openwrt-mvebu-cortexa9-linksys_wrt1200ac-squashfs-sysupgrade.bin"
+    elseif board_name:match("linksys,wrt3200acm$") then
+		model = "mvebu_cortexa9/linksys_wrt3200acm"
+		check_update()
+		download_url = "https://op.supes.top/firmware/" ..model.. "/" ..remote_version.. "-openwrt-mvebu-cortexa9-linksys_wrt3200acm-squashfs-sysupgrade.bin"
     elseif board_name:match("qihoo,v6$") then
 		model = "ipq60xx_generic/qihoo_v6"
 		check_update()
