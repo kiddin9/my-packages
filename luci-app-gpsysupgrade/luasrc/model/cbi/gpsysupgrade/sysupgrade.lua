@@ -415,11 +415,11 @@ function to_check()
     elseif board_name:match("glinet,axt1800$") then
 		model = "ipq807x_ipq60xx/glinet_axt1800"
 		check_update()
-		download_url = "https://op.supes.top/firmware/" ..model.. "/" ..remote_version.. "-openwrt-ipq807x-glinet_axt1800-squashfs-sysupgrade.tar.gz"
+		download_url = "https://op.supes.top/firmware/" ..model.. "/" ..remote_version.. "-openwrt-ipq807x-glinet_axt1800-squashfs-sysupgrade.tar"
     elseif board_name:match("glinet,ax1800$") then
 		model = "ipq807x_ipq60xx/glinet_ax1800"
 		check_update()
-		download_url = "https://op.supes.top/firmware/" ..model.. "/" ..remote_version.. "-openwrt-ipq807x-glinet_ax1800-squashfs-sysupgrade.tar.gz"
+		download_url = "https://op.supes.top/firmware/" ..model.. "/" ..remote_version.. "-openwrt-ipq807x-glinet_ax1800-squashfs-sysupgrade.tar"
     elseif board_name:match("linksys,mr7350$") then
 		model = "ipq60xx_generic/linksys_mr7350"
 		check_update()
