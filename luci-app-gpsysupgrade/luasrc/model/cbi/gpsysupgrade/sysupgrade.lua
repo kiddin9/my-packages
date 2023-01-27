@@ -488,6 +488,10 @@ function to_check()
 		model = "ramips_mt7620/xiaomi_miwifi-r3"
 		check_update()
 		download_url = "https://op.supes.top/firmware/" ..model.. "/" ..remote_version.. "-openwrt-ramips-mt7620-xiaomi_miwifi-r3-squashfs-sysupgrade.bin"
+    elseif board_name:match("hiwifi,r33$") then
+		model = "ramips_mt7620/hiwifi_r33"
+		check_update()
+		download_url = "https://op.supes.top/firmware/" ..model.. "/" ..remote_version.. "-openwrt-ramips-mt7620-hiwifi_r33-squashfs-sysupgrade.bin"
     elseif board_name:match("redmi%-router%-ax6000$") then
 		model = "mediatek_mt7986/xiaomi_redmi-router-ax6000"
 		check_update()
