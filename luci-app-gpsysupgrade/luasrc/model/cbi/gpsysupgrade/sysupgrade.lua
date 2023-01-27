@@ -96,6 +96,10 @@ function to_check()
 		model = "rockchip_armv8/xunlong_orangepi-r1-plus"
 		check_update()
 		download_url = "https://op.supes.top/firmware/" ..model.. "/" ..remote_version.. "-openwrt-rockchip-armv8-xunlong_orangepi-r1-plus-squashfs-sysupgrade.img.gz"
+    elseif board_name:match("ariaboard,photonicat$") then
+		model = "rockchip_armv8/ariaboard_photonicat"
+		check_update()
+		download_url = "https://op.supes.top/firmware/" ..model.. "/" ..remote_version.. "-openwrt-rockchip-armv8-ariaboard_photonicat-squashfs-sysupgrade.img.gz"
     elseif board_name:match("nanopi%-neo3$") then
 		model = "rockchip_armv8/friendlyarm_nanopi-neo3"
 		check_update()
