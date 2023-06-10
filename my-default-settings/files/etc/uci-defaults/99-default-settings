@@ -238,6 +238,10 @@ fi
 
 grep -q "location /luci " /etc/nginx/conf.d/luci.locations 2>/dev/null &&
 	cp -pR /www/cgi-bin/* /www/
+
+sed -i "s/client_max_body_size 128/client_max_body_size 3072/" /etc/nginx/uci.conf.template
+sed -i "s/large_client_header_buffers 2 1k/large_client_header_buffers 4 512k/" /etc/nginx/uci.conf.template
+
 rm -rf /tmp/luci-*
 
 uci -q set base_config.@status[0].version=$version
