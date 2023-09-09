@@ -439,7 +439,7 @@ function to_check()
     elseif board_name:match("qihoo,v6$") then
 		model = "qualcommax_ipq60xx/qihoo_v6"
 		check_update()
-		download_url = "https://dl.openwrt.ai/firmware/" ..model.. "/" ..remote_version.. "-openwrt-qualcommax_ipq60xx-qihoo_v6-squashfs-nand-sysupgrade.bin"
+		download_url = "https://dl.openwrt.ai/firmware/" ..model.. "/" ..remote_version.. "-openwrt-qualcommax-ipq60xx-qihoo_v6-squashfs-nand-sysupgrade.bin"
     elseif board_name:match("glinet,gl%-axt1800$") then
 		model = "qualcommax_ipq60xx/glinet_gl-axt1800"
 		check_update()
@@ -451,23 +451,23 @@ function to_check()
     elseif board_name:match("linksys,mr7350$") then
 		model = "qualcommax_ipq60xx/linksys_mr7350"
 		check_update()
-		download_url = "https://dl.openwrt.ai/firmware/" ..model.. "/" ..remote_version.. "-openwrt-qualcommax_ipq60xx-linksys_mr7350-squashfs-nand-sysupgrade.bin"
+		download_url = "https://dl.openwrt.ai/firmware/" ..model.. "/" ..remote_version.. "-openwrt-qualcommax-ipq60xx-linksys_mr7350-squashfs-nand-sysupgrade.bin"
     elseif board_name:match("cmiot,ax18$") then
 		model = "qualcommax_ipq60xx/cmiot_ax18"
 		check_update()
-		download_url = "https://dl.openwrt.ai/firmware/" ..model.. "/" ..remote_version.. "-openwrt-qualcommax_ipq60xx-cmiot_ax18-squashfs-nand-sysupgrade.bin"
+		download_url = "https://dl.openwrt.ai/firmware/" ..model.. "/" ..remote_version.. "-openwrt-qualcommax-ipq60xx-cmiot_ax18-squashfs-nand-sysupgrade.bin"
     elseif board_name:match("zn,m2$") then
 		model = "qualcommax_ipq60xx/zn_m2"
 		check_update()
-		download_url = "https://dl.openwrt.ai/firmware/" ..model.. "/" ..remote_version.. "-openwrt-qualcommax_ipq60xx-zn_m2-squashfs-nand-sysupgrade.bin"
+		download_url = "https://dl.openwrt.ai/firmware/" ..model.. "/" ..remote_version.. "-openwrt-qualcommax-ipq60xx-zn_m2-squashfs-nand-sysupgrade.bin"
     elseif board_name:match("xiaomi,rm1800$") then
 		model = "qualcommax_ipq60xx/xiaomi_rm1800"
 		check_update()
-		download_url = "https://dl.openwrt.ai/firmware/" ..model.. "/" ..remote_version.. "-openwrt-qualcommax_ipq60xx-xiaomi_rm1800-squashfs-nand-sysupgrade.bin"
+		download_url = "https://dl.openwrt.ai/firmware/" ..model.. "/" ..remote_version.. "-openwrt-qualcommax-ipq60xx-xiaomi_rm1800-squashfs-nand-sysupgrade.bin"
     elseif board_name:match("wf%-hr6001$") then
 		model = "qualcommax_ipq60xx/huasifei_wf-hr6001"
 		check_update()
-		download_url = "https://dl.openwrt.ai/firmware/" ..model.. "/" ..remote_version.. "-openwrt-qualcommax_ipq60xx-huasifei_wf-hr6001-squashfs-nand-sysupgrade.bin"
+		download_url = "https://dl.openwrt.ai/firmware/" ..model.. "/" ..remote_version.. "-openwrt-qualcommax-ipq60xx-huasifei_wf-hr6001-squashfs-nand-sysupgrade.bin"
     elseif board_name:match("gl%-mt300a$") then
 		model = "ramips_mt7620/glinet_gl-mt300a"
 		check_update()
