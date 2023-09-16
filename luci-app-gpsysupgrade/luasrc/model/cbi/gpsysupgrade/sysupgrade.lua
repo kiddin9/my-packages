@@ -620,11 +620,11 @@ function to_check()
 		model = "mediatek_mt7981/mt7981-clt-r30b1-112M"
 		check_update()
 		download_url = "https://dl.openwrt.ai/firmware/" ..model.. "/" ..remote_version.. "-openwrt-mediatek-mt7981-mt7981-clt-r30b1-112M-squashfs-sysupgrade.bin"
-    elseif board_name:match("komi-a31$") then
+    elseif board_name:match("komi%-a31$") then
 		model = "mediatek_mt7981/konka_komi-a31"
 		check_update()
 		download_url = "https://dl.openwrt.ai/firmware/" ..model.. "/" ..remote_version.. "-openwrt-mediatek-mt7981-konka_komi-a31-squashfs-sysupgrade.bin"
-    elseif board_name:match("lc-hx3001$") then
+    elseif board_name:match("lc%-hx3001$") then
 		model = "mediatek_mt7981/imou_lc-hx3001"
 		check_update()
 		download_url = "https://dl.openwrt.ai/firmware/" ..model.. "/" ..remote_version.. "-openwrt-mediatek-mt7981-imou_lc-hx3001-squashfs-sysupgrade.bin"
