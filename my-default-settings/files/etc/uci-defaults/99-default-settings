@@ -170,6 +170,7 @@ if [[ ! "$version" || "$version" -lt 1 ]]; then
 
 	uci -q set system.@system[0].conloglevel='4'
 	uci -q set system.@system[0].cronloglevel='8'
+	uci -q set system.@system[0].ttylogin=1
 	uci commit system
 fi
 
