@@ -230,7 +230,7 @@ fi
 uci -q rename nginx._redirect2ssl='op'
 uci -q set nginx.op.server_name='op'
 uci -q delete nginx.op.return
-uci -q add_list nginx.op.include='conf.d/*.locations'
+uci -q set nginx.op.include='conf.d/*.locations'
 uci -q set nginx.op.access_log='off; # logd openwrt'
 uci commit nginx
 
