@@ -223,21 +223,21 @@ if [[ ! "$version" || "$version" -lt 1 ]]; then
 
 if [ -n "$(command -v nginx)" ]; then
 	uci add wizard shortcuts
-	uci set wizard.@shortcuts[-1].shortcut='fw'
+	uci set wizard.@shortcuts[-1].shortcut='pw'
 	uci set wizard.@shortcuts[-1].to_url='http://10.0.0.1/cgi-bin/luci/admin/services/passwall'
 	uci set wizard.@shortcuts[-1].comments='passwall'
 	uci commit wizard
 
-	uci -q set nginx._sc_fw=server
-	uci -q set nginx._sc_fw.server_name="fw"
-	uci -q add_list nginx._sc_fw.listen="80"
-	uci -q add_list nginx._sc_fw.listen="443"
-	uci -q set nginx._sc_fw.return="302 http://10.0.0.1/cgi-bin/luci/admin/services/passwall"
+	uci -q set nginx._sc_pw=server
+	uci -q set nginx._sc_pw.server_name="pw"
+	uci -q add_list nginx._sc_pw.listen="80"
+	uci -q add_list nginx._sc_pw.listen="443"
+	uci -q set nginx._sc_pw.return="302 http://10.0.0.1/cgi-bin/luci/admin/services/passwall"
 
-	uci -q set dhcp._sc_fw=domain
-	uci -q set dhcp._sc_fw.name="fw"
-	uci -q set dhcp._sc_fw.ip="10.0.0.1"
-	uci -q set dhcp._sc_fw.comments="PassWall"
+	uci -q set dhcp._sc_pw=domain
+	uci -q set dhcp._sc_pw.name="pw"
+	uci -q set dhcp._sc_pw.ip="10.0.0.1"
+	uci -q set dhcp._sc_pw.comments="PassWall"
 	uci commit dhcp
 fi
 	version=1
