@@ -281,3 +281,13 @@ uci -q set firewall.@defaults[0].fullcone='0'
 uci commit firewall
 }
 }
+
+cd /
+ipk_files=$(find . -maxdepth 1 -name "*.ipk")
+
+if [ -n "$ipk_files" ]; then
+for file in $ipk_files; do
+  echo "正在安装: $file"
+  opkg install "$file"
+done
+fi
