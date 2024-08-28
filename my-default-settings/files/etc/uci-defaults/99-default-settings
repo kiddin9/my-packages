@@ -288,6 +288,11 @@ ipk_files=$(find . -maxdepth 1 -name "*.ipk")
 if [ -n "$ipk_files" ]; then
 for file in $ipk_files; do
   echo "正在安装: $file"
-  opkg install "$file"
+  if opkg install "$file"; then
+    echo "安装成功，正在删除: $file"
+    rm "$file"
+  else
+    echo "安装失败: $file"
+  fi
 done
 fi
