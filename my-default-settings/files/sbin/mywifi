@@ -48,8 +48,8 @@ board_name() {
 	}
 
 for i in $(seq 1 5); do
-		grep -q '"wlan"' /etc/board.json && break
-		/sbin/wifi config
+		[[ "$(uci -q get base_config.@status[0].version)" != 0 && "$(cat /etc/config/wireless)" ]] && break
+		grep -q '"wlan"' /etc/board.json || /sbin/wifi config
 		sleep 1s
 done
 
