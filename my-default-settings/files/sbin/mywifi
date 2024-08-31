@@ -47,7 +47,7 @@ board_name() {
 		fi
 	}
 
-	if [[ -f /etc/config/wireless ]]; then
+	if [[ "$(cat /etc/config/wireless)" ]]; then
 		. /etc/openwrt_release
 		SSID="$(uci -q get wizard.default.wifi_ssid || uci -q get system.@system[0].hostname || echo Kwrt)"
 		SSID_PASSWD="$(uci -q get wizard.default.wifi_key)"
