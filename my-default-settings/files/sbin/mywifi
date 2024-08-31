@@ -1,6 +1,5 @@
 #!/bin/sh
 
-. /etc/openwrt_release
 board_name() {
 	[ -e /tmp/sysinfo/board_name ] && cat /tmp/sysinfo/board_name || echo "generic"
 }
@@ -49,6 +48,7 @@ board_name() {
 	}
 
 	if [[ -f /etc/config/wireless ]]; then
+		. /etc/openwrt_release
 		SSID="$(uci -q get wizard.default.wifi_ssid || uci -q get system.@system[0].hostname || echo Kwrt)"
 		SSID_PASSWD="$(uci -q get wizard.default.wifi_key)"
 		sed -i '/option disabled/d' /etc/config/wireless
