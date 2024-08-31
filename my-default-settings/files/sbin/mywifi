@@ -62,4 +62,6 @@ sed -i '/option disabled/d' /etc/config/wireless
 			wifi_setup_radio ${radio}
 		done
 		uci commit wireless
+		uci -q set base_config.@status[0].wifi=1
+		uci commit base_config
 	fi
