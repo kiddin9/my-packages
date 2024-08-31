@@ -4,10 +4,6 @@
 board_name() {
 	[ -e /tmp/sysinfo/board_name ] && cat /tmp/sysinfo/board_name || echo "generic"
 }
-SSID="$(uci -q get wizard.default.wifi_ssid || uci -q get system.@system[0].hostname || echo Kwrt)"
-SSID_PASSWD="$(uci -q get wizard.default.wifi_key)"
-
-sed -i '/option disabled/d' /etc/config/wireless
 
 	wifi_setup_radio(){
 	local radio=$1
@@ -53,6 +49,10 @@ sed -i '/option disabled/d' /etc/config/wireless
 	}
 
 	if [[ -f /etc/config/wireless ]]; then
+		SSID="$(uci -q get wizard.default.wifi_ssid || uci -q get system.@system[0].hostname || echo Kwrt)"
+		SSID_PASSWD="$(uci -q get wizard.default.wifi_key)"
+		sed -i '/option disabled/d' /etc/config/wireless
+
 		[ "$(uci -q get wireless.radio1.band)" == "5g" ] && uci -q set wireless.radio0.band="2g"
 		widx=0
 		while uci rename wireless.@wifi-iface[$widx]=default_radio$widx >/dev/null 2>&1; do widx=$((widx+1)); done
