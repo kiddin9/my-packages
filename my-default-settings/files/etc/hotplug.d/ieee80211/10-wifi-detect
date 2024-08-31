@@ -1,7 +1,7 @@
 #!/bin/sh
 
 [ "${ACTION}" = "add" ] && {
-	for i in $(seq 1 3); do
+	for i in $(seq 1 4); do
 		/sbin/wifi config
 		grep -q '"wlan"' /etc/board.json && break
 		sleep 1s
