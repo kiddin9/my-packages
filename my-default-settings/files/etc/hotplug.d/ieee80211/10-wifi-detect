@@ -6,5 +6,5 @@
 		grep -q '"wlan"' /etc/board.json && break
 		sleep 1s
 	done
-	[ -z "$(uci -q get base_config.@status[0].wifi)" ] && . /sbin/mywifi
+	[[ -z "$(uci -q get base_config.@status[0].wifi)" && ]] && . /sbin/mywifi
 }
