@@ -12,7 +12,7 @@ LUCI_BASENAME:=lighttpd
 LUCI_TITLE:=LuCI Configuration Interface with Lighttpd as webserver
 LUCI_DESCRIPTION:=Standard set including full admin with ppp support, package management and the default Bootstrap theme
 LUCI_DEPENDS:= \
-	+lighttpd +lighttpd-mod-alias +lighttpd-mod-cgi +lighttpd-mod-redirect +luci-theme-bootstrap \
+	+lighttpd +lighttpd-mod-alias +lighttpd-mod-cgi +lighttpd-mod-redirect +luci-mod-admin-full +luci-theme-bootstrap \
 	+luci-app-firewall +luci-app-package-manager +luci-proto-ppp +IPV6:luci-proto-ipv6 \
 	+rpcd-mod-rrdns
 
