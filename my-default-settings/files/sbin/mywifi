@@ -24,7 +24,7 @@ board_name() {
 			else
 				uci -q set wireless.default_${radio}.encryption='none'
 			fi
-		fi
+	fi
 	}
 
 for i in $(seq 1 10); do
