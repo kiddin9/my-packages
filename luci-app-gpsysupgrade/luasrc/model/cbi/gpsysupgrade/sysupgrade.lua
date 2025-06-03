@@ -11,12 +11,11 @@ function get_system_version()
 end
 
 function check_update()
-		needs_update, notice, md5 = false, false, false
+		needs_update, notice = false, false
 		remote_version = luci.sys.exec("curl -skfL https://dl.openwrt.ai/firmware/" ..model.. "/version.txt")
 		updatelogs = luci.sys.exec("curl -skfL https://dl.openwrt.ai/firmware/updatelogs.txt")
 		remoteformat = luci.sys.exec("date -d $(echo \"" ..remote_version.. "\" | tr '\r\n' ',' | awk -F, '{printf $1}' | awk -F. '{printf $3\"-\"$1\"-\"$2}') +%s")
 		fnotice = luci.sys.exec("echo \"" ..remote_version.. "\" | tr '\r\n' ',' | awk -F, '{printf $(NF-1)}'")
-		md5 = luci.sys.exec("echo \"" ..remote_version.. "\" | tr '\r\n' ',' | awk -F, '{printf $2}'")
 		remote_version = luci.sys.exec("echo \"" ..remote_version.. "\" | tr '\r\n' ',' | awk -F, '{printf $1}' | awk -F. '{printf $1\".\"$2\".\"$3}'")
 		if remoteformat > sysverformat then
 			needs_update = true
@@ -41,7 +40,6 @@ function to_check()
     		download_url = "https://dl.openwrt.ai/firmware/" ..model.. "/" ..remote_version.. "-kwrt-x86-64-generic-squashfs-combined-efi.img.gz"
     	else
     		download_url = "https://dl.openwrt.ai/firmware/" ..model.. "/" ..remote_version.. "-kwrt-x86-64-generic-squashfs-combined.img.gz"
-    		md5 = ""
     	end
     elseif board_name == "x86_generic" then
     	model = "x86_32"
@@ -50,7 +48,6 @@ function to_check()
     		download_url = "https://dl.openwrt.ai/firmware/" ..model.. "/" ..remote_version.. "-kwrt-x86-generic-squashfs-combined-efi.img.gz"
     	else
     		download_url = "https://dl.openwrt.ai/firmware/" ..model.. "/" ..remote_version.. "-kwrt-x86-generic-squashfs-combined.img.gz"
-    		md5 = ""
     	end
     elseif board_name:match("phicomm,k3$") or board_name:match("rt%-ac88u$") then
 		check_update()
@@ -83,13 +80,12 @@ function to_check()
         notice = notice,
         now_version = get_system_version(),
         version = remote_version,
-        md5 = md5,
         logs = updatelogs,
         url = download_url
     }
 end
 
-function to_download(url,md5)
+function to_download(url)
     if not url or url == "" then
         return {code = 1, error = i18n.translate("Download url is required.")}
     end
@@ -107,16 +103,6 @@ function to_download(url,md5)
             error = i18n.translatef("File download failed or timed out: %s", url)
         }
     end
-
-	local md5local = sys.exec("echo -n $(md5sum " .. tmp_file .. " | awk '{print $1}')")
-
-	if md5 ~= "" and md5local ~= md5 then
-		api.exec("/bin/rm", {"-f", tmp_file})
-		return {
-            code = 1,
-            error = i18n.translatef("Md5 check failed: %s", url)
-        }
-	end
 
     return {code = 0, file = tmp_file}
 end
