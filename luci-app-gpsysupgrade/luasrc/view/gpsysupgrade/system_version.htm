@@ -235,7 +235,7 @@ overlay = boardinfo.release.distribution
 
 		img.onload = ok;
 		img.onerror = check;
-		img.src = '<%=resource%>/icons/loading.gif?' + Math.random();
+		img.src = '<%=resource%>/icons/loading.svg?' + Math.random();
 
 		if (tries++ >= 30) {
 			message.classList.remove('notice');
