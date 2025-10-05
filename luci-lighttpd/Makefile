@@ -1,44 +1,23 @@
 #
-# Copyright (C) 2018-2020 CZ.NIC z.s.p.o. (https://www.nic.cz/)
+# Copyright (C) 2008-2014 The LuCI Team <luci@lists.subsignal.org>
 #
-# This is free software, licensed under the GNU General Public License v2.
-# See /LICENSE for more information.
-# #
+# This is free software, licensed under the Apache License, Version 2.0 .
 #
+
 include $(TOPDIR)/rules.mk
 
-PKG_NAME:=luci-lighttpd
-PKG_VERSION:=1
-PKG_RELEASE:=1
+LUCI_TYPE:=col
+LUCI_BASENAME:=nginx
 
-PKG_MAINTAINER:=CZ.NIC <packaging@turris.cz>
+LUCI_TITLE:=LuCI interface with Lighttpd as Webserver
+LUCI_DESCRIPTION:=Standard OpenWrt set including full admin with ppp support and the default Bootstrap theme
+LUCI_DEPENDS:= \
+	+lighttpd +lighttpd-mod-alias +lighttpd-mod-cgi +luci-mod-admin-full +luci-theme-bootstrap \
+	+luci-app-firewall +luci-app-package-manager +luci-proto-ppp +IPV6:luci-proto-ipv6 \
+	+rpcd-mod-rrdns
 
-include $(INCLUDE_DIR)/package.mk
+PKG_LICENSE:=Apache-2.0
 
-define Package/luci-lighttpd
-  TITLE:=Support package of lighttpd for LuCI
-  DEPENDS:=+luci-base +lighttpd-mod-cgi +lighttpd-mod-alias +lighttpd-mod-setenv
-endef
+include ../../luci.mk
 
-Build/Compile:=:
-
-define Package/luci-lighttpd/install
-	$(INSTALL_DIR) $(1)/etc/lighttpd/conf.d/
-	$(INSTALL_CONF) ./files/luci.conf $(1)/etc/lighttpd/conf.d/luci.conf
-endef
-
-define Package/luci-lighttpd/postinst
-#!/bin/sh
-if [ -z "$$IPKG_INSTROOT" ]; then
-  /etc/init.d/lighttpd restart
-fi
-endef
-
-define Package/luci-lighttpd/postrm
-#!/bin/sh
-if [ -z "$$IPKG_INSTROOT" ]; then
-  /etc/init.d/lighttpd restart
-fi
-endef
-
-$(eval $(call BuildPackage,luci-lighttpd))
+# call BuildPackage - OpenWrt buildroot signature
