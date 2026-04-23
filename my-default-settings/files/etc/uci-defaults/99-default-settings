@@ -26,7 +26,7 @@ if ! echo "$(uci -q get uhttpd.main.index_page)" | grep -q "cgi-bin/luci"; then
 	uci commit uhttpd
 fi
 
-if [ "$(uci -q get dropbear.main._direct)" != "1" ] && [ "$(uci -q get dropbear.main.Interface)" ]; then
+if [ "$(uci -q get dropbear.main._direct)" != "1" ] && [ -z "$(uci -q get dropbear.main.Interface)" ]; then
 	uci del dropbear.main.Interface
 	uci commit dropbear
 fi
