@@ -222,7 +222,7 @@ done
 
 # 提交配置
 uci commit wireless 2>/dev/null
-uci -q set base_config.@status[0].wifi=1
+uci -q set base_config.@status[0].wifi='1'
 uci commit base_config
 # 重载无线网络
 if command -v wifi >/dev/null 2>&1; then
