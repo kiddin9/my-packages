@@ -16,8 +16,12 @@ show_help() {
 选项:
   -s, --ssid <名称>       指定基础WiFi名称
   -p, --password <密码>   指定WiFi密码
-  -f, --force             强制重新执行（跳过 wifi=1 已配置检查）
+  -f, --force             强制重新执行（忽略 wifi=1 已配置检查）
   -h, --help              查看帮助信息
+
+并发与等待机制:
+  - 无参调用时：若已有 mywifi 在执行，直接终止退出；
+  - 带 -f 或传参调用时：若已有 mywifi 在执行，自动排队等待其执行完成后再继续执行。
 
 WiFi命名规范:
   2.4 GHz  -> <WiFi名>_2.4G
@@ -26,48 +30,14 @@ WiFi命名规范:
 
 使用示例:
   mywifi                             # 默认执行（若已配置过或正在执行则自动终止）
-  mywifi -f                          # 强制重新按 hostname 恢复默认配置
-  mywifi "HomeWiFi" "12345678"       # 设置指定 WiFi 名及密码
+  mywifi -f                          # 强制重新按 hostname 恢复默认配置（若有执行中则排队等待）
+  mywifi "HomeWiFi" "12345678"       # 设置指定 WiFi 名及密码（若有执行中则排队等待）
   mywifi -f "HomeWiFi" "12345678"    # 强制覆盖设置
 EOF_HELP
 }
 
 # -------------------------------------------------------------
-# 1. 防并发执行检测（若 /sbin/mywifi 正在执行，直接终止脚本）
-# -------------------------------------------------------------
-LOCK_FILE="/var/run/mywifi.lock"
-
-check_already_running() {
-    local cur_pid=$$
-    local cur_ppid=$PPID
-
-    # A. flock 文件描述符锁（非阻塞探测）
-    if command -v flock >/dev/null 2>&1; then
-        exec 9>"$LOCK_FILE" 2>/dev/null || true
-        if ! flock -n 9 2>/dev/null; then
-            echo "[INFO] 检测到 /sbin/mywifi 已在执行中 (flock 占用)，直接终止脚本。"
-            exit 0
-        fi
-    fi
-
-    # B. 进程表二次扫描（兜底兼容缺失 flock 的极限环境）
-    for p in $(pgrep -f "mywifi" 2>/dev/null); do
-        if [ "$p" != "$cur_pid" ] && [ "$p" != "$cur_ppid" ]; then
-            local cmd="$(cat /proc/$p/cmdline 2>/dev/null | tr '\0' ' ')"
-            case "$cmd" in
-                *mywifi*)
-                    echo "[INFO] 检测到 /sbin/mywifi 已在执行中 (PID: $p)，直接终止脚本。"
-                    exit 0
-                    ;;
-            esac
-        fi
-    done
-}
-
-check_already_running
-
-# -------------------------------------------------------------
-# 2. 解析命令行参数
+# 1. 优先解析命令行参数（判断是否带有 -f 或自定义参数）
 # -------------------------------------------------------------
 CUSTOM_SSID=""
 CUSTOM_PASSWD=""
@@ -104,12 +74,18 @@ while [ $# -gt 0 ]; do
     shift
 done
 
+# 判断是否需要等待正在运行的实例完成
+# 只要指定了 -f 或传入了自定义 SSID / 密码，就启用等待锁机制
+WAIT_LOCK=0
+if [ $FORCE -eq 1 ] || [ -n "$CUSTOM_SSID" ] || [ $HAS_PASSWD -eq 1 ]; then
+    WAIT_LOCK=1
+fi
+
 # -------------------------------------------------------------
-# 3. 检查 base_config 状态标记（若 wifi=1 已完成配置，直接终止）
+# 2. 检查 base_config 状态标记（无参且已配置过 wifi=1 时直接退出）
 # -------------------------------------------------------------
 if [ $FORCE -eq 0 ]; then
     if [ "$(uci -q get base_config.@status[0].wifi 2>/dev/null)" = "1" ]; then
-        # 如果未传入新参数或强制标志，说明是开机脚本/后台触发的重复执行，直接退出
         if [ -z "$CUSTOM_SSID" ] && [ $HAS_PASSWD -eq 0 ]; then
             echo "[INFO] WiFi 已配置完成 (base_config.@status[0].wifi=1)，无需重复执行，直接终止脚本。"
             exit 0
@@ -117,7 +93,75 @@ if [ $FORCE -eq 0 ]; then
     fi
 fi
 
-# 密码长度合法性校验（若指定了密码）
+# -------------------------------------------------------------
+# 3. 并发锁处理：带参/-f 模式等待完成，无参模式直接终止
+# -------------------------------------------------------------
+LOCK_FILE="/var/run/mywifi.lock"
+
+acquire_lock() {
+    local cur_pid=$$
+    local cur_ppid=$PPID
+
+    # A. 优先采用 flock 文件描述符锁（内核自动回收，安全可靠）
+    if command -v flock >/dev/null 2>&1; then
+        exec 9>"$LOCK_FILE" 2>/dev/null || true
+        if [ $WAIT_LOCK -eq 1 ]; then
+            if ! flock -n 9 2>/dev/null; then
+                echo "[INFO] 检测到 /sbin/mywifi 已在执行中，等待其执行完成后再继续..."
+                flock -w 60 9 2>/dev/null || {
+                    echo "[ERROR] 等待其他 /sbin/mywifi 执行超时（60秒）！" >&2
+                    exit 1
+                }
+            fi
+        else
+            if ! flock -n 9 2>/dev/null; then
+                echo "[INFO] 检测到 /sbin/mywifi 已在执行中，直接终止脚本。"
+                exit 0
+            fi
+        fi
+    else
+        # B. 备用进程轮询检测机制（兼容无 flock 极简环境）
+        local wait_limit=60
+        local waited=0
+        while true; do
+            local other_running=0
+            for p in $(pgrep -f "mywifi" 2>/dev/null); do
+                if [ "$p" != "$cur_pid" ] && [ "$p" != "$cur_ppid" ]; then
+                    local cmd="$(cat /proc/$p/cmdline 2>/dev/null | tr '\0' ' ')"
+                    case "$cmd" in
+                        *mywifi*)
+                            other_running=1
+                            break
+                            ;;
+                    esac
+                fi
+            done
+
+            if [ $other_running -eq 0 ]; then
+                break
+            fi
+
+            if [ $WAIT_LOCK -eq 1 ]; then
+                [ $waited -eq 0 ] && echo "[INFO] 检测到 /sbin/mywifi 已在执行中，等待其执行完成后再继续..."
+                sleep 1
+                waited=$((waited + 1))
+                if [ $waited -ge $wait_limit ]; then
+                    echo "[ERROR] 等待其他 /sbin/mywifi 执行超时！" >&2
+                    exit 1
+                fi
+            else
+                echo "[INFO] 检测到 /sbin/mywifi 已在执行中，直接终止脚本。"
+                exit 0
+            fi
+        done
+    fi
+}
+
+acquire_lock
+
+# -------------------------------------------------------------
+# 4. 密码长度合法性校验（若指定了密码）
+# -------------------------------------------------------------
 if [ $HAS_PASSWD -eq 1 ] && [ -n "$CUSTOM_PASSWD" ]; then
     pwd_len=${#CUSTOM_PASSWD}
     if [ "$pwd_len" -lt 8 ] || [ "$pwd_len" -gt 63 ]; then
@@ -130,7 +174,7 @@ else
 fi
 
 # -------------------------------------------------------------
-# 4. 深度硬件就绪检测（确保多频硬件驱动加载与 UCI 配置完整就绪）
+# 5. 深度就绪检测（确保多频硬件驱动加载与 UCI 配置完整就绪）
 # -------------------------------------------------------------
 wait_wifi_ready() {
     local max_wait=15
@@ -184,7 +228,7 @@ if ! wait_wifi_ready; then
 fi
 
 # -------------------------------------------------------------
-# 5. 频段识别函数 (2g, 5g, 6g)
+# 6. 频段识别函数 (2g, 5g, 6g)
 # -------------------------------------------------------------
 detect_band() {
     local radio="$1"
@@ -225,7 +269,7 @@ detect_band() {
 }
 
 # -------------------------------------------------------------
-# 6. 配置 SSID 与各频段接口
+# 7. 配置 SSID 与各频段接口
 # -------------------------------------------------------------
 [ -f /etc/openwrt_release ] && . /etc/openwrt_release
 
