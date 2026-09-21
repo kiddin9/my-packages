@@ -46,16 +46,28 @@ while [ $# -gt 0 ]; do
             FORCE=1
             ;;
         -s|--ssid)
-            shift
-            CUSTOM_SSID="$1"
+            # 仅当后一个参数存在且不是以 '-' 开头的其他选项时，才提取为 SSID
+            if [ $# -ge 2 ] && [ "${2#-}" = "$2" ]; then
+                shift
+                CUSTOM_SSID="$1"
+            else
+                CUSTOM_SSID=""
+            fi
             ;;
         -p|--password)
-            shift
-            CUSTOM_PASSWD="$1"
-            HAS_PASSWD=1
+            # 仅当后一个参数存在且不是以 '-' 开头的其他选项时，才提取为密码
+            if [ $# -ge 2 ] && [ "${2#-}" = "$2" ]; then
+                shift
+                CUSTOM_PASSWD="$1"
+                HAS_PASSWD=1
+            else
+                # 若 -p 后面未跟密码值，安全处理为“无密码开放网络”
+                CUSTOM_PASSWD=""
+                HAS_PASSWD=0
+            fi
             ;;
         *)
-            # 彻底忽略所有其他位置参数，防止任何系统事件/热插拔传参干扰
+            # 忽略所有非选项参数
             ;;
     esac
     shift
