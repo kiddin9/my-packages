@@ -97,14 +97,6 @@ if [ "$version" -lt 1 ]; then
 	version=1
 fi
 
-# 5. 默认后台域名映射与 Nginx 规则
-[ -z "$(uci -q get dhcp.default_server)" ] && uci -q batch <<-EOF
-	set dhcp.default_server=domain
-	set dhcp.default_server.name='kwrt'
-	set dhcp.default_server.ip='${lan_ip}'
-	set dhcp.default_server.comments='后台地址'
-EOF
-
 if command -v nginx >/dev/null 2>&1; then
 	if [ -f /etc/nginx/conf.d/luci.locations ]; then
 		grep -q 'uwsgi_read_timeout' /etc/nginx/conf.d/luci.locations || sed -i '/include uwsgi_params;/a\\t\tuwsgi_read_timeout 300s;' /etc/nginx/conf.d/luci.locations
