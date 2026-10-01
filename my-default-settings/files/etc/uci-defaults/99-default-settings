@@ -36,15 +36,6 @@ c=1024; nf=16384
 [ "$mem" -ge 524288 ]  && { c=10000; nf=131072; }
 [ "$mem" -ge 1048576 ] && { c=10000; nf=262144; }
 
-if [ ! -f /usr/share/ucitrack/luci-clean.json ]; then
-cat << 'EOF' > /usr/share/ucitrack/luci-clean.json
-{
-    "config": "luci",
-    "exec": "/bin/rm -f /tmp/luci-indexcache*"
-}
-EOF
-fi
-
 # 4. 首次开机参数统一批量预设
 if [ "$version" -lt 1 ]; then
 	uci -q batch <<-EOF
