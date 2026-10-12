@@ -226,10 +226,9 @@ done
 # -------------------------------------------------------------
 uci commit wireless 2>/dev/null
 
-if uci -q get system.@status[0] >/dev/null 2>&1; then
-    uci -q set system.@status[0].wifi=1
-    uci commit system 2>/dev/null
-fi
+uci -q get system.@status[0] >/dev/null || uci -q add system status >/dev/null
+uci -q set system.@status[0].wifi=1
+uci commit system 2>/dev/null
 
 wifi reload 2>/dev/null || /sbin/wifi reload 2>/dev/null
 
