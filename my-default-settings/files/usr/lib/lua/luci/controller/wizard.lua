@@ -45,9 +45,9 @@ function landing_page()
         end
 
     -- 2. 常规指定页面
-    elseif page == "overview" then
+    elseif page == "status/overview" then
         target = {"admin", "status", "overview"}
-    elseif page == "dashboard" then
+    elseif page == "status/dashboard" then
         target = {"admin", "status", "dashboard"}
 
     -- 3. Routerdog 模式（优先比对字符串，命中再检测进程）
@@ -57,10 +57,10 @@ function landing_page()
     -- 4. iStoreOS / iStoreX 增强页面（仅在 quickstart 运行时有效）
     elseif is_running("quickstart") then
         local istore_routes = {
-            istoreos   = {"admin", "quickstart"},
-            nas        = {"admin", "istorex", "nas"},
-            ["next-nas"] = {"admin", "istorex", "next-nas"},
-            router     = {"admin", "istorex", "router"}
+            quickstart   = {"admin", "quickstart"},
+            ["istorex/nas"]        = {"admin", "istorex", "nas"},
+            ["istorex/next-nas"] = {"admin", "istorex", "next-nas"},
+            ["istorex/router"]     = {"admin", "istorex", "router"}
         }
         if istore_routes[page] then
             target = istore_routes[page]
